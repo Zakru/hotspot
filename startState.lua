@@ -1,8 +1,17 @@
+local introState = require('gameState')
+local Radio = require('Radio')
+local FrequencySet = require('FrequencySet')
+local fade = require('fade')
+local Map = require('Map')
+
 local startState = {}
 
-function startState.draw(globalState)
-  globalState.common.drawNoiseTiles(1)
-  love.graphics.print("Asdf", 0, 0)
+function startState.load(globalState)
+  Radio.load()
+  FrequencySet.load()
+  fade.load()
+  Map.load()
+  globalState.changeState(introState)
 end
 
 return startState
