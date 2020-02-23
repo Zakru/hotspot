@@ -66,7 +66,7 @@ function introState.update(globalState, dt)
   frequencySet:update(radio.frequency, initialFade)
 
   fade.update()
-  radio.source:setVolume((1 - fade.depth()) * initialFade)
+  radio.source:setVolume((1 - fade.depth()) * initialFade * radio:pitchVolumeFactor())
   if fade.isFadedOut() then
     globalState.changeState(gameState)
     radio.source:stop()

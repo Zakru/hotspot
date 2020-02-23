@@ -30,4 +30,8 @@ function Radio:update()
   self.source:setPitch(self:getSinePitch())
 end
 
+function Radio:pitchVolumeFactor()
+  return 0.5 - 0.25 * ((self.frequency - 100) / 1900)
+end
+
 return Radio

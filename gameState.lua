@@ -153,7 +153,7 @@ function gameState.update(globalState, dt)
   map:update(radio.frequency)
 
   fade.update()
-  radio.source:setVolume(1 - fade.depth())
+  radio.source:setVolume((1 - fade.depth()) * radio:pitchVolumeFactor())
 
   local w,h = globalState.common.scaledDimensions(globalState)
   local playerScreenX = math.min(math.max(player.x * 16, math.floor(w/2)), #map.collisions[1] * 16 - math.floor(w/2))
