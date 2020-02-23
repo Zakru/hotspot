@@ -20,7 +20,7 @@ local camTrackX
 local camTrackY
 
 local levelnum = 0
-local nextlevel = 5
+local nextlevel = 1
 local levels = {
   'level_1',
   'level_2',
