@@ -29,7 +29,7 @@ local textHint
 
 function love.load()
   love.graphics.setDefaultFilter('nearest', 'nearest')
-  love.audio.setVolume(0.25)
+  love.audio.setVolume(0.1)
   love.mouse.setVisible(false)
 
   globalState.common.load()
@@ -51,10 +51,10 @@ end
 function love.update(dt)
   if menu then
     if love.keyboard.isDown('n') then
-      love.audio.setVolume(math.max(love.audio.getVolume() - dt * 0.25, 0))
+      love.audio.setVolume(math.max(love.audio.getVolume() - dt * 0.1, 0))
     end
     if love.keyboard.isDown('m') then
-      love.audio.setVolume(math.min(love.audio.getVolume() + dt * 0.25, 1))
+      love.audio.setVolume(math.min(love.audio.getVolume() + dt * 0.1, 1))
     end
   end
 
