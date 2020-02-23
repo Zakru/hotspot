@@ -1,4 +1,4 @@
-local introState = require('gameState')
+local introState = require('introState')
 local Radio = require('Radio')
 local FrequencySet = require('FrequencySet')
 local fade = require('fade')

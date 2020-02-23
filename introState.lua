@@ -15,6 +15,11 @@ local frequencySet
 local title
 local initialFade = 0
 local knobFade = 0
+local instructionsFade = 1
+local letterJ
+local letterK
+local instructionText
+local menuText
 
 function introState.load(globalState)
   radio = Radio.newRadio()
@@ -24,6 +29,10 @@ function introState.load(globalState)
 
   knob = love.graphics.newImage('knob.png')
   title = love.graphics.newImage('title.png')
+  letterJ = love.graphics.newText(globalState.common.font, 'J')
+  letterK = love.graphics.newText(globalState.common.font, 'K')
+  instructionText = love.graphics.newText(globalState.common.font, 'FIND A FREQUENCY')
+  menuText = love.graphics.newText(globalState.common.font, 'ESC TO ENTER MENU')
 
   frequencySet = FrequencySet.newFrequencySet()
   frequencySet.noiseSource:play()
@@ -33,6 +42,10 @@ function introState.update(globalState, dt)
   initialFade = math.min(initialFade + dt * 0.25, 1)
   if initialFade == 1 then
     knobFade = math.min(knobFade + dt * 0.5, 1)
+  end
+
+  if directionDecided then
+    instructionsFade = math.max(instructionsFade - dt, 0)
   end
 
   local moved = false
@@ -76,6 +89,13 @@ function introState.draw(globalState)
 
   colorStack.push(1,1,1, knobAlpha)
     love.graphics.draw(knob, w / 2, h * 3 / 4, angle, 1, 1, 16, 16)
+  colorStack.pop()
+
+  colorStack.push(0.125,0.125,0.125, knobAlpha * instructionsFade)
+    love.graphics.draw(instructionText, w / 2, h / 2, 0, 2, 2, instructionText:getWidth()/2, instructionText:getHeight()/2)
+    love.graphics.draw(menuText, 8, 8, 0, 2, 2)
+    love.graphics.draw(letterJ, w / 2 - 32, h * 3 / 4, 0, 2, 2, letterJ:getWidth()/2, letterJ:getHeight()/2)
+    love.graphics.draw(letterK, w / 2 + 32, h * 3 / 4, 0, 2, 2, letterK:getWidth()/2, letterK:getHeight()/2)
   colorStack.pop()
 
   fade.draw(globalState)

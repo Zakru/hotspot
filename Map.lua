@@ -37,9 +37,10 @@ function Map.load()
   loadTile('green_single')
 end
 
-function Map.newMap(startx, starty, collisions, frequencies)
+function Map.newMap(startfreq, startx, starty, collisions, frequencies)
   local m = {}
 
+  m.startfreq = startfreq
   m.startx = startx
   m.starty = starty
   m.collisions = collisions
@@ -51,10 +52,12 @@ function Map.newMap(startx, starty, collisions, frequencies)
 end
 
 function Map.read(path)
+  print('loading ' .. path)
   local data = love.filesystem.read(path)
 
   local line = data:gmatch('([^\n]+)\n?')
 
+  local startfreq = tonumber(line())
   local startx = tonumber(line())
   local starty = tonumber(line())
 
@@ -96,23 +99,20 @@ function Map.read(path)
     table.insert(frequencies.frequencies, frequency)
   end
 
-  return Map.newMap(startx, starty, collisions, frequencies)
+  return Map.newMap(startfreq, startx, starty, collisions, frequencies)
 end
 
 function Map:update(freq)
   self.frequencies:update(freq)
 end
 
-function Map:draw(globalState, freq)
-  local w,h = globalState.common.scaledDimensions(globalState)
-  local xoff = math.floor(w / 2 - #self.collisions[1] * 16 / 2) - 16
-  local yoff = math.floor(h / 2 - #self.collisions * 16 / 2) - 16
+function Map:draw(globalState, freq, xoff, yoff)
   local closest = self.frequencies:maxProximityFrequency(freq)
   if closest then
     for y,row in ipairs(closest.tilemap) do
       for x,item in ipairs(row) do
         if item ~= Map.noneTile then
-          love.graphics.draw(item, x*16+xoff, y*16+yoff)
+          love.graphics.draw(item, x*16+xoff - 16, y*16+yoff - 16)
         end
       end
     end

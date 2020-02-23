@@ -6,15 +6,14 @@ local player = {}
 player.x = 0
 player.y = 0
 
-function player.draw(globalState, map)
-  local w,h = globalState.common.scaledDimensions(globalState)
-  local xoff = math.floor(w / 2 - #map.collisions[1] * 16 / 2)
-  local yoff = math.floor(h / 2 - #map.collisions * 16 / 2)
+function player.draw(globalState, xoff, yoff)
+  local x = player.x * 16
+  local y = player.y * 16
   colorStack.push(0,0,0, 1)
-    love.graphics.rectangle("fill", player.x*16+xoff, player.y*16+yoff, 10, 10)
+    love.graphics.rectangle("fill", x+xoff, y+yoff, 10, 10)
     for i=1,10 do
       local s = math.random(2,6)
-      love.graphics.rectangle("fill", math.random(player.x*16+xoff-2, player.x*16+xoff+12-s), math.random(player.y*16+yoff-2, player.y*16+yoff+12-s), s, s)
+      love.graphics.rectangle("fill", math.random(x+xoff-2, x+xoff+12-s), math.random(y+yoff-2, y+yoff+12-s), s, s)
     end
   colorStack.pop()
 end

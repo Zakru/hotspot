@@ -9,36 +9,56 @@ local gameState = {}
 local radio
 local map
 
+local moveInstr
+local jumpInstr
+
 local playerVelx
 local playerVely
 local playerJumpTimer
-local jumpWasPressed
+local jumped
+local camTrackX
+local camTrackY
 
 local levelnum = 0
-local nextlevel = 4
+local nextlevel = 1
 local levels = {
   'level_1',
   'level_2',
-  'level_3',
-  'level_4',
+  'level_blue_intro',
+  'level_blue_parkour',
+  'level_blue_drop_test',
+  'level_red_intro',
+  'level_red_memory_maze',
+  'level_green_intro',
+  'level_green_drop_sequence',
+  'level_green_prank_jump',
+  'level_green_blue_switcheroo',
+  'level_think_fast',
+  'level_blue_switcheroo',
+  'level_tower_of_doom',
 }
 
 function gameState.load(globalState)
-  radio = Radio.newRadio()
-  radio.frequency = 1050
-  radio:update()
-  radio.source:play()
-
   levelnum = nextlevel
   map = Map.read(levels[levelnum])
   map.frequencies.noiseSource:play()
 
+  radio = Radio.newRadio()
+  radio.frequency = map.startfreq
+  radio:update()
+  radio.source:play()
+
   player.x = map.startx
   player.y = map.starty
+  camTrackX = map.startx * 16
+  camTrackY = map.starty * 16
   playerVelx = 0
   playerVely = 0
   playerJumpTimer = 0
   jumpWasPressed = false
+
+  moveInstr = love.graphics.newImage('movement_instructions.png')
+  jumpInstr = love.graphics.newImage('jump_instructions.png')
 end
 
 function gameState.unload(globalState)
@@ -112,13 +132,14 @@ function gameState.update(globalState, dt)
   end
 
   local jump = love.keyboard.isDown('space') or love.keyboard.isDown('w') or love.keyboard.isDown('up')
-  if ground and jump and not jumpWasPressed then
+  if ground and jump and not jumped then
     playerVely = -16
     playerJumpTimer = 0.5
+    jumped = true
   elseif not jump then
     playerJumpTimer = 0
+    jumped = false
   end
-  jumpWasPressed = jump
 
   if player.tileInside(map, radio.frequency) == Map.masterTiles['black_flag'] and fade.fading ~= 1 then
     nextlevel = levelnum + 1
@@ -134,6 +155,14 @@ function gameState.update(globalState, dt)
   fade.update()
   radio.source:setVolume(1 - fade.depth())
 
+  local w,h = globalState.common.scaledDimensions(globalState)
+  local playerScreenX = math.min(math.max(player.x * 16, math.floor(w/2)), #map.collisions[1] * 16 - math.floor(w/2))
+  local playerScreenY = math.min(math.max(player.y * 16, math.floor(h/2)), #map.collisions * 16 - math.floor(h/2))
+  camTrackX = playerScreenX + (camTrackX - playerScreenX) * math.pow(0.1, dt)
+  camTrackY = playerScreenY + (camTrackY - playerScreenY) * math.pow(0.1, dt)
+  camTrackX = math.min(math.max(camTrackX, math.floor(w/2)), #map.collisions[1] * 16 - math.floor(w/2))
+  camTrackY = math.min(math.max(camTrackY, math.floor(h/2)), #map.collisions * 16 - math.floor(h/2))
+
   if fade.isFadedOut() then
     if nextlevel == #levels + 1 then
       globalState.changeState(creditsState)
@@ -147,10 +176,35 @@ end
 function gameState.draw(globalState)
   love.graphics.clear(1,1,1,1)
 
-  map:draw(globalState, radio.frequency)
+  local mapWidth = #map.collisions[1] * 16
+  local mapHeight = #map.collisions * 16
+  local w,h = globalState.common.scaledDimensions(globalState)
+  local xoff, yoff
+  if mapWidth > w then
+    xoff = w / 2 - camTrackX
+  else
+    xoff = w / 2 - mapWidth / 2
+  end
+  if mapHeight > h then
+    yoff = h / 2 - camTrackY
+  else
+    yoff = h / 2 - mapHeight / 2
+  end
+
+  map:draw(globalState, radio.frequency, xoff, yoff)
+
+  if levelnum == 1 then
+    local closest = map.frequencies:maxProximityFrequency(radio.frequency)
+    if closest == map.frequencies.frequencies[1] then
+      love.graphics.draw(moveInstr, w/2, h/2 + 64, 0, 2, 2, moveInstr:getWidth()/2, moveInstr:getHeight()/2)
+    else
+      love.graphics.draw(jumpInstr, w/2, h/2 - 64, 0, 2, 2, jumpInstr:getWidth()/2, jumpInstr:getHeight()/2)
+    end
+  end
+
   map:drawNoise(globalState, radio.frequency)
 
-  player.draw(globalState, map)
+  player.draw(globalState, xoff, yoff)
 
   fade.draw(globalState)
 end
