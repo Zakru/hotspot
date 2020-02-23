@@ -20,7 +20,7 @@ local camTrackX
 local camTrackY
 
 local levelnum = 0
-local nextlevel = 1
+local nextlevel = 5
 local levels = {
   'level_1',
   'level_2',
@@ -96,25 +96,25 @@ function gameState.update(globalState, dt)
   if love.keyboard.isDown('d') or love.keyboard.isDown('right') then
     playerMoved = true
     if playerVelx < 0 then
-      playerVelx = playerVelx + 64 * dt
+      playerVelx = playerVelx + 128 * dt
     else
-      playerVelx = math.min(playerVelx + 32 * dt, 16)
+      playerVelx = math.min(playerVelx + 64 * dt, 16)
     end
   end
   if love.keyboard.isDown('a') or love.keyboard.isDown('left') then
     playerMoved = true
     if playerVelx > 0 then
-      playerVelx = playerVelx - 64 * dt
+      playerVelx = playerVelx - 128 * dt
     else
-      playerVelx = math.max(playerVelx - 32 * dt, -16)
+      playerVelx = math.max(playerVelx - 64 * dt, -16)
     end
   end
 
   if not playerMoved then
     if playerVelx < 0 then
-      playerVelx = math.min(playerVelx + 32 * dt, 0)
+      playerVelx = math.min(playerVelx + 64 * dt, 0)
     elseif playerVelx > 0 then
-      playerVelx = math.max(playerVelx - 32 * dt, 0)
+      playerVelx = math.max(playerVelx - 64 * dt, 0)
     end
   end
 
