@@ -7,13 +7,13 @@ player.x = 0
 player.y = 0
 
 function player.draw(globalState, xoff, yoff)
-  local x = player.x * 16
-  local y = player.y * 16
+  local x = player.x
+  local y = player.y
   colorStack.push(0,0,0, 1)
-    love.graphics.rectangle("fill", x+xoff, y+yoff, 10, 10)
+    love.graphics.rectangle("fill", x+xoff, y+yoff, 0.625, 0.625)
     for i=1,10 do
-      local s = math.random(2,6)
-      love.graphics.rectangle("fill", math.random(x+xoff-2, x+xoff+12-s), math.random(y+yoff-2, y+yoff+12-s), s, s)
+      local s = math.random()*0.25 + 0.125
+      love.graphics.rectangle("fill", x+xoff + math.random()*(0.875 - s)-0.125, y+yoff + math.random()*(0.875 - s)-0.125, s, s)
     end
   colorStack.pop()
 end

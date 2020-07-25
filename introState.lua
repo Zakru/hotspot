@@ -28,7 +28,9 @@ function introState.load(globalState)
   radio.source:play()
 
   knob = love.graphics.newImage('knob.png')
+  love.graphics.setDefaultFilter('nearest', 'nearest')
   title = love.graphics.newImage('title.png')
+  love.graphics.setDefaultFilter('linear', 'linear')
   letterJ = love.graphics.newText(globalState.common.font, 'J')
   letterK = love.graphics.newText(globalState.common.font, 'K')
   instructionText = love.graphics.newText(globalState.common.font, 'FIND A FREQUENCY')
@@ -88,7 +90,7 @@ function introState.draw(globalState)
   if knobFade < 1 then knobAlpha = knobFade end
 
   colorStack.push(1,1,1, knobAlpha)
-    love.graphics.draw(knob, w / 2, h * 3 / 4, angle, 1, 1, 16, 16)
+    love.graphics.draw(knob, w / 2, h * 3 / 4, angle, 0.125, 0.125, 128, 128)
   colorStack.pop()
 
   colorStack.push(0.125,0.125,0.125, knobAlpha * instructionsFade)

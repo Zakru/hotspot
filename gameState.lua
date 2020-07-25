@@ -57,8 +57,10 @@ function gameState.load(globalState)
   playerJumpTimer = 0
   jumpWasPressed = false
 
+  love.graphics.setDefaultFilter('nearest', 'nearest')
   moveInstr = love.graphics.newImage('movement_instructions.png')
   jumpInstr = love.graphics.newImage('jump_instructions.png')
+  love.graphics.setDefaultFilter('linear', 'linear')
 end
 
 function gameState.unload(globalState)
@@ -191,7 +193,10 @@ function gameState.draw(globalState)
     yoff = h / 2 - mapHeight / 2
   end
 
-  map:draw(globalState, radio.frequency, xoff, yoff)
+  love.graphics.push()
+    love.graphics.scale(16, 16)
+    map:draw(globalState, radio.frequency, xoff / 16, yoff / 16)
+  love.graphics.pop()
 
   if levelnum == 1 then
     local closest = map.frequencies:maxProximityFrequency(radio.frequency)
@@ -204,7 +209,10 @@ function gameState.draw(globalState)
 
   map:drawNoise(globalState, radio.frequency)
 
-  player.draw(globalState, xoff, yoff)
+  love.graphics.push()
+    love.graphics.scale(16, 16)
+    player.draw(globalState, xoff / 16, yoff / 16)
+  love.graphics.pop()
 
   fade.draw(globalState)
 end

@@ -112,7 +112,7 @@ function Map:draw(globalState, freq, xoff, yoff)
     for y,row in ipairs(closest.tilemap) do
       for x,item in ipairs(row) do
         if item ~= Map.noneTile then
-          love.graphics.draw(item, x*16+xoff - 16, y*16+yoff - 16)
+          love.graphics.draw(item, x+xoff - 1, y+yoff - 1, 0, 1 / item:getWidth(), 1 / item:getHeight())
         end
       end
     end

@@ -28,7 +28,6 @@ local textJump
 local textHint
 
 function love.load()
-  love.graphics.setDefaultFilter('nearest', 'nearest')
   love.audio.setVolume(0.1)
   love.mouse.setVisible(false)
 
@@ -65,7 +64,7 @@ end
 
 function love.draw()
   local w,h = love.graphics.getDimensions()
-  globalState.scale = math.max(math.floor(h / 250), 1)
+  globalState.scale = 2 ^ math.floor(math.log(h / 250) / math.log(2))
   love.graphics.scale(globalState.scale, globalState.scale)
 
   if globalState.state.draw then
