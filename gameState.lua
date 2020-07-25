@@ -120,11 +120,23 @@ function gameState.update(globalState, dt)
     end
   end
 
-  if not player.tryGo(map, player.x + playerVelx*dt, player.y, radio.frequency) then
+  local xdir = -1
+  if playerVelx > 0 then
+    xdir = 1
+  elseif playerVelx < 0 then
+    xdir = 3
+  end
+  if not player.tryGo(map, player.x + playerVelx*dt, player.y, radio.frequency, xdir) then
     playerVelx = 0
   end
+  local ydir = -1
+  if playerVely < 0 then
+    ydir = 0
+  elseif playerVely > 0 then
+    ydir = 2
+  end
   local ground = false
-  if not player.tryGo(map, player.x, player.y + playerVely*dt, radio.frequency) then
+  if not player.tryGo(map, player.x, player.y + playerVely*dt, radio.frequency, ydir) then
     if playerVely > 0 then
       ground = true
     else

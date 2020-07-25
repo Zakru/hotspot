@@ -18,17 +18,28 @@ function player.draw(globalState, xoff, yoff)
   colorStack.pop()
 end
 
-function player.tryGo(map, x,y, freq)
+function player.tryGo(map, x,y, freq, dir)
   local minX = math.floor(x)+1
   local maxX = math.floor(x+10/16)+1
   local minY = math.floor(y)+1
   local maxY = math.floor(y+10/16)+1
+  if maxX == x+10/16 + 1 then maxX = maxX - 1 end
+  if maxY == y+10/16 + 1 then maxY = maxY - 1 end
   local closest = map.frequencies:maxProximityFrequency(freq)
   -- If blocked by blue
   if closest then
     for y=minY,maxY do
       for x=minX,maxX do
         if closest.tilemap and closest.tilemap[y] and closest.tilemap[y][x] == Map.masterTiles['blue_single'] then
+          if dir == 0 then
+            player.y = y
+          elseif dir == 1 then
+            player.x = x - 1.625
+          elseif dir == 2 then
+            player.y = y - 1.625
+          elseif dir == 3 then
+            player.x = x
+          end
           return false
         end
       end
@@ -40,6 +51,15 @@ function player.tryGo(map, x,y, freq)
       for y=minY,maxY do
         for x=minX,maxX do
           if frequency.tilemap and frequency.tilemap[y] and frequency.tilemap[y][x] == Map.masterTiles['green_single'] then
+            if dir == 0 then
+              player.y = y
+            elseif dir == 1 then
+              player.x = x - 1.625
+            elseif dir == 2 then
+              player.y = y - 1.625
+            elseif dir == 3 then
+              player.x = x
+            end
             return false
           end
         end
@@ -50,6 +70,15 @@ function player.tryGo(map, x,y, freq)
   for y=minY,maxY do
     for x=minX,maxX do
       if map.collisions and map.collisions[y] and map.collisions[y][x] then
+        if dir == 0 then
+          player.y = y
+        elseif dir == 1 then
+          player.x = x - 1.625
+        elseif dir == 2 then
+          player.y = y - 1.625
+        elseif dir == 3 then
+          player.x = x
+        end
         return false
       end
     end
